@@ -68,6 +68,10 @@ function bignum.tostring(num)
     return num.significand .. "e" .. ("%d"):format(num.exponent)
 end
 
+function bignum.clone(num)
+    return bignum.new(num.significand, num.exponent)
+end
+
 function bignum.multiply(num1, num2)
     return bignum.new(
         num1.significand * num2.significand,
