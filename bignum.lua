@@ -136,4 +136,17 @@ function bignum.abs(num)
     return bignum.new(math.abs(num.significand), num.exponent)
 end
 
+function bignum.inverse(num)
+    return bignum.divide(bignum.new(1), num)
+end
+
+function bignum.pow(num, exp)
+    local significand = num.significand ^ exp
+    local exponent = num.exponent * exp
+    local decimal_part = exponent - math.floor(exponent)
+    significand = significand * 10 ^ decimal_part
+    exponent = exponent - decimal_part
+    return bignum.new(significand, exponent)
+end
+
 return bignum
