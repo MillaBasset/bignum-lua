@@ -15,6 +15,9 @@ local mt = {
     __div = function(num1, num2)
         return num1:divide(num2)
     end,
+    __pow = function(num, exp)
+        return num:pow(exp)
+    end,
     __unm = function(num)
         return num:negate()
     end,
