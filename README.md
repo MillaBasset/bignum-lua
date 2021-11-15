@@ -2,8 +2,8 @@
 Large number library that trades precision for simplicity. Number range is ±10^(2^53).
 
 ## Features
-- Arithmetic operations: addition, subtraction, multiplication, division
-- Additional operations: comparison, negation, absolute value, (basic) to-string
+- Arithmetic operations: addition, subtraction, multiplication, division, exponentiation
+- Additional operations: to-string, cloning, comparison, negation, inversion, absolute value
 - Small (< 200 sloc)
 - Portable (works in Lua 5.1+)
 
