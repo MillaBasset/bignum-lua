@@ -52,7 +52,7 @@ function bignum.new(significand, exponent)
     if not significand then
         significand = 0
     end
-    if not exponent then
+    if significand == 0 or not exponent then
         exponent = 0
     end
     return setmetatable(normalize({
@@ -62,7 +62,10 @@ function bignum.new(significand, exponent)
 end
 
 function bignum.tostring(num)
-    return num.significand .. "e" .. num.exponent
+    if num.exponent < 14 and num.exponent > -5 then
+        return tostring(num.significand * 10 ^ num.exponent)
+    end
+    return num.significand .. "e" .. ("%d"):format(num.exponent)
 end
 
 function bignum.multiply(num1, num2)
