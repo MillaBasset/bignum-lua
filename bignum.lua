@@ -36,8 +36,7 @@ local mt = {
     __index = bignum
 }
 
-local function normalize(num)
-    local significand, exponent = num.significand, num.exponent
+local function normalize(significand, exponent)
     while math.abs(significand) >= 10 do
         significand = significand / 10
         exponent = exponent + 1
@@ -46,9 +45,7 @@ local function normalize(num)
         significand = significand * 10
         exponent = exponent - 1
     end
-    num.significand = significand
-    num.exponent = exponent
-    return num
+    return significand, exponent
 end
 
 function bignum.new(significand, exponent)
@@ -58,10 +55,11 @@ function bignum.new(significand, exponent)
     if significand == 0 or not exponent then
         exponent = 0
     end
-    return setmetatable(normalize({
+    significand, exponent = normalize(significand, exponent)
+    return setmetatable({
         significand = significand,
         exponent = exponent
-    }), mt)
+    }, mt)
 end
 
 function bignum.tostring(num)
@@ -144,12 +142,42 @@ function bignum.inverse(num)
 end
 
 function bignum.pow(num, exp)
+    --[[
     local significand = num.significand ^ exp
     local exponent = num.exponent * exp
     local decimal_part = exponent - math.floor(exponent)
     significand = significand * 10 ^ decimal_part
     exponent = exponent - decimal_part
     return bignum.new(significand, exponent)
+    ]]
+    if exp == 0 then
+        return bignum.new(1)
+    elseif bignum.compare(bignum.new(0), num) == 0 then
+        return bignum.new(0)
+    elseif exp < 0 then
+        return bignum.pow(bignum.inverse(num), -exp)
+    else
+        -- exponent represents num's exponent
+        -- exp represents the argument to pow
+        local significand = num.significand
+        local exponent = num.exponent
+        while exp >= 2 do
+            significand, exponent = normalize(significand ^ 2, exponent * 2)
+            exp = exp / 2
+        end
+        while exp < 1 do
+            significand, exponent = normalize(significand ^ 0.5, exponent * 0.5)
+            exp = exp * 2
+        end
+        significand = significand ^ exp
+        exponent = exponent * exp
+
+        -- coerce exponent to an integer
+        local decimal_part = exponent - math.floor(exponent)
+        significand = significand * 10 ^ decimal_part
+        exponent = exponent - decimal_part
+        return bignum.new(significand, exponent)
+    end
 end
 
 return bignum
