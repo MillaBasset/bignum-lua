@@ -117,6 +117,12 @@ function bignum.add(num1, num2)
     if num1 < num2 then
         num1, num2 = num2, num1
     end
+    -- if the smaller number is way smaller than the larger number,
+    -- do nothing
+    if num1.significand - num2.significand >= 20 then
+        return bignum.new(num1.significand, num1.exponent)
+    end
+    
     local significand, exponent = num2.significand, num2.exponent
     while num1.exponent ~= exponent do
         significand = significand / 10
@@ -142,14 +148,6 @@ function bignum.inverse(num)
 end
 
 function bignum.pow(num, exp)
-    --[[
-    local significand = num.significand ^ exp
-    local exponent = num.exponent * exp
-    local decimal_part = exponent - math.floor(exponent)
-    significand = significand * 10 ^ decimal_part
-    exponent = exponent - decimal_part
-    return bignum.new(significand, exponent)
-    ]]
     if exp == 0 then
         return bignum.new(1)
     elseif bignum.compare(bignum.new(0), num) == 0 then
