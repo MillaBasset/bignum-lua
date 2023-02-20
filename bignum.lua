@@ -119,10 +119,10 @@ function bignum.add(num1, num2)
     end
     -- if the smaller number is way smaller than the larger number,
     -- do nothing
-    if num1.significand - num2.significand >= 20 then
+    if num1.significand - num2.significand >= 100 then
         return bignum.new(num1.significand, num1.exponent)
     end
-    
+
     local significand, exponent = num2.significand, num2.exponent
     while num1.exponent ~= exponent do
         significand = significand / 10
